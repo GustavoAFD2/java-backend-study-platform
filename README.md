@@ -8,7 +8,7 @@
 
 Plataforma web interativa para organizar, acompanhar e documentar uma trilha prática de **~16 semanas (4 meses)** focada na conquista da primeira vaga de **estágio em Desenvolvimento Backend Java**.
 
-🔗 **Acesse a plataforma online:** `https://SEU-USUARIO.github.io/java-backend-study-platform/` *(atualize após ativar o GitHub Pages)*
+🔗 **Acesse a plataforma online:** `🔗 **Acesse a plataforma online:** https://gustavoafd2.github.io/java-backend-study-platform/` 
 
 ---
 
