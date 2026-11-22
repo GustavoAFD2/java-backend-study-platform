@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plano de Estudos — Java Backend (Foco em Estágio)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            spring: {
+              DEFAULT: '#6DB33F',
+              dark: '#589630',
+              light: '#85C957'
+            },
+            java: {
+              DEFAULT: '#E76F00',
+              dark: '#C45D00',
+              light: '#F89820'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
+    .glass-card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200 selection:bg-spring/30 selection:text-spring">
+
+  <!-- Welcome / Multi-user Isolation Modal -->
+  <div id="welcomeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="max-w-lg w-full rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 md:p-8 space-y-5">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-java to-spring flex items-center justify-center text-white font-mono font-bold text-lg shadow-lg">
+          &lt;/&gt;
+        </div>
+        <div>
+          <span class="text-xs font-mono uppercase tracking-wider text-spring font-semibold">Roadmap Interativo</span>
+          <h2 class="text-xl font-bold">Java Backend — Foco em Estágio</h2>
+        </div>
+      </div>
+
+      <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        Bem-vindo(a)! Esta plataforma organiza uma trilha prática de <strong>~16 semanas (4 meses)</strong> rumo à primeira vaga de estágio em desenvolvimento Java Backend.
+      </p>
+
+      <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 space-y-1.5">
+        <p class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+          <span>🔒</span> Seu progresso é individual
+        </p>
+        <p>
+          Todos os checkboxes, anotações, links de repositórios e horas estudadas são salvos exclusivamente no navegador (<code>localStorage</code>) de cada visitante. Você pode exportar backup em JSON ou reiniciar tudo a qualquer momento.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <button onclick="startFresh()" class="w-full py-2.5 px-4 rounded-xl bg-spring hover:bg-spring-dark text-white font-semibold text-sm transition shadow-md shadow-spring/20 cursor-pointer">
+          Começar do Zero (0%)
+        </button>
+        <button onclick="loadDemoData()" class="w-full py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-sm transition cursor-pointer">
+          Modo Demo (Recrutadores)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-slate-900/90 glass-card border-b border-slate-200 dark:border-slate-800">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-java to-spring flex items-center justify-center text-white font-mono font-bold text-sm">J</div>
+      <span class="font-bold text-sm tracking-tight">Java Backend Roadmap</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" title="Alternar Tema">
+        <span id="mobileThemeIcon">☀️</span>
+      </button>
+      <button onclick="toggleSidebar()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-xs">
+        MENU
+      </button>
+    </div>
+  </header>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-auto transition-transform duration-200 ease-in-out bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+      <div class="p-5 overflow-y-auto space-y-6">
+        <!-- Brand -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-java to-spring flex items-center justify-center text-white font-mono font-bold text-base shadow-md">
+              Java
+            </div>
+            <div>
+              <h1 class="font-bold text-sm leading-tight">Java Backend</h1>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">Foco em Estágio</p>
+            </div>
+          </div>
+          <button onclick="toggleTheme()" class="hidden lg:flex p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition cursor-pointer" title="Alternar Tema">
+            <span id="desktopThemeIcon">☀️</span>
+          </button>
+        </div>
+
+        <!-- Mini Progress -->
+        <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+          <div class="flex justify-between items-center text-xs font-medium">
+            <span class="text-slate-600 dark:text-slate-300">Progresso Geral</span>
+            <span id="sidebarPercent" class="font-mono font-bold text-spring">0%</span>
+          </div>
+          <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div id="sidebarProgressBar" class="h-full bg-gradient-to-r from-java to-spring transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Nav Links -->
+        <nav class="space-y-1">
+          <p class="px-2.5 pb-1 text-[11px] font-mono uppercase tracking-wider text-slate-400">Visão Geral</p>
+          <button onclick="navigate('dashboard')" data-nav="dashboard" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer">
+            <span class="flex items-center gap-2.5"><span>📊</span> Dashboard</span>
+          </button>
+          <button onclick="navigate('portfolio')" data-nav="portfolio" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer">
+            <span class="flex items-center gap-2.5"><span>🚀</span> Portfólio & Projetos</span>
+            <span id="navProjectsBadge" class="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800">0/6</span>
+          </button>
+          <button onclick="navigate('tips')" data-nav="tips" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer">
+            <span class="flex items-center gap-2.5"><span>💡</span> Dicas & Entrevista</span>
+          </button>
+
+          <p class="px-2.5 pt-4 pb-1 text-[11px] font-mono uppercase tracking-wider text-slate-400">Trilha (16 Semanas)</p>
+          <div id="phaseNavList" class="space-y-1"></div>
+        </nav>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="exportJSON()" class="py-1.5 px-2.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer">
+            ⬇ Exportar
+          </button>
+          <label class="py-1.5 px-2.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition text-center cursor-pointer">
+            ⬆ Importar
+            <input type="file" accept=".json" onchange="importJSON(event)" class="hidden" />
+          </label>
+        </div>
+        <button onclick="confirmReset()" class="w-full py-2 px-3 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 border border-rose-200/70 dark:border-rose-900/50 transition cursor-pointer">
+          ↺ Reiniciar Meu Progresso
+        </button>
+      </div>
+    </aside>
+
+    <!-- Backdrop for mobile sidebar -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 z-30 bg-slate-950/60 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl mx-auto w-full space-y-8">
+      <div id="appContent"></div>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'java_backend_study_platform_v1';
+
+    const PLAN_DATA = {
+      meta: {
+        title: 'Plano de Estudos — Java Backend (foco em estágio)',
+        profile: 'Lógica de programação básica, sem experiência prévia em Java',
+        duration: '~16 semanas (4 meses), ritmo de 10-15h/semana',
+        goal: 'Ter base sólida em Java + Spring Boot, um portfólio no GitHub e confiança pra passar em processos seletivos de estágio',
+        quote: 'Ajuste o ritmo conforme sua disponibilidade. O importante não é a data, é não pular a prática — cada fase tem um projeto pra fixar o conteúdo.'
+      },
+      techStack: [
+        { name: 'Java 17+', phases: [1, 3] },
+        { name: 'POO', phases: [2] },
+        { name: 'Collections', phases: [3] },
+        { name: 'Streams', phases: [3] },
+        { name: 'SQL', phases: [4] },
+        { name: 'Spring Boot', phases: [5] },
+        { name: 'Spring Data JPA', phases: [5] },
+        { name: 'Spring Security (básico)', phases: [5] },
+        { name: 'JUnit/Mockito', phases: [5] },
+        { name: 'Git', phases: [6] },
+        { name: 'Docker (básico)', phases: [6] },
+        { name: 'REST APIs', phases: [5, 6] }
+      ],
+      tips: [
+        {
+          title: 'Consistência > intensidade',
+          desc: '1h todo dia rende mais que 8h no fim de semana.'
+        },
+        {
+          title: 'Sempre código, não só teoria',
+          desc: 'Depois de cada conceito novo, escreva código usando ele.'
+        },
+        {
+          title: 'Um projeto "carro-chefe"',
+          desc: 'Tenha pelo menos um projeto robusto que você conhece cada detalhe, pra falar dele com propriedade em entrevista.'
+        },
+        {
+          title: 'Comece a se candidatar antes de "estar pronto"',
+          desc: 'Processos de estágio costumam ter etapas de teste técnico + lógica, então você aprende bastante só participando.'
+        },
+        {
+          title: 'Comunidades',
+          desc: 'Participe de grupos de Java no Discord/Telegram e do Reddit r/brdev pra tirar dúvidas e ver vagas.'
+        }
+      ],
+      phases: [
+        {
+          id: 1,
+          shortTitle: 'Fase 1 · Fundamentos',
+          title: 'Fase 1 — Fundamentos de Java',
+          weeks: 'Semanas 1-3',
+          highlight: false,
+          topics: [
+            'Instalação (JDK, IntelliJ IDEA Community)',
+            'Sintaxe: variáveis, tipos primitivos, operadores',
+            'Estruturas de controle (if/else, switch, loops)',
+            'Arrays e Strings',
+            'Métodos e escopo',
+            'Tratamento de exceções (try/catch/finally, exceptions customizadas)'
+          ],
+          resources: [
+            { label: 'Curso "Java Completo" (Udemy - José Wellington ou Nélio Alves) ou canal "Curso em Vídeo" (Java)', url: 'https://www.youtube.com/results?search_query=curso+em+video+java' },
+            { label: 'Documentação oficial Oracle Java Tutorials', url: 'https://docs.oracle.com/javase/tutorial/' }
+          ],
+          project: {
+            title: 'Sistema de calculadora ou jogo da velha via terminal',
+            subtitle: 'Projeto da Fase 1',
+            checklist: []
+          }
+        },
+        {
+          id: 2,
+          shortTitle: 'Fase 2 · POO',
+          title: 'Fase 2 — Orientação a Objetos',
+          weeks: 'Semanas 4-6',
+          highlight: false,
+          topics: [
+            'Classes, objetos, atributos e métodos',
+            'Encapsulamento, herança, polimorfismo, abstração',
+            'Interfaces e classes abstratas',
+            'Construtores, this, super',
+            'Modificadores de acesso',
+            'Enums',
+            'Princípios de Clean Code aplicados a Java'
+          ],
+          resources: [
+            { label: 'Continuação do curso da Fase 1 (módulo de Orientação a Objetos)', url: 'https://www.udemy.com/' },
+            { label: 'Livro "Use a Cabeça! Java" (Head First Java) — ótimo pra fixar POO', url: 'https://www.google.com/search?q=Use+a+Cabe%C3%A7a+Java+Head+First+Java' }
+          ],
+          project: {
+            title: 'Sistema de gerenciamento (ex: biblioteca, locadora, escola) com classes bem modeladas',
+            subtitle: 'Projeto da Fase 2 — Base do que você vai evoluir depois',
+            checklist: []
+          }
+        },
+        {
+          id: 3,
+          shortTitle: 'Fase 3 · Collections & Streams',
+          title: 'Fase 3 — Collections, Generics e Java Moderno',
+          weeks: 'Semanas 7-8',
+          highlight: false,
+          topics: [
+            'List, Set, Map (ArrayList, HashMap, TreeMap etc.)',
+            'Generics',
+            'Streams API e expressões lambda',
+            'Optional',
+            'Comparable/Comparator',
+            'Java 17+ features (records, var, switch expressions)'
+          ],
+          resources: [
+            { label: 'Documentação oficial + exercícios no LeetCode / HackerRank (nível fácil, tag "Java")', url: 'https://www.hackerrank.com/domains/java' }
+          ],
+          project: {
+            title: 'Refatorar o projeto da Fase 2 usando Streams e Collections de forma idiomática',
+            subtitle: 'Projeto da Fase 3',
+            checklist: []
+          }
+        },
+        {
+          id: 4,
+          shortTitle: 'Fase 4 · SQL & Banco',
+          title: 'Fase 4 — SQL e Banco de Dados',
+          weeks: 'Semana 9',
+          highlight: false,
+          topics: [
+            'Modelagem relacional (entidades, relacionamentos, normalização)',
+            'SQL: SELECT, JOIN, GROUP BY, subqueries',
+            'PostgreSQL ou MySQL (escolha um e domine)',
+            'JDBC (entender como funciona por baixo do ORM)'
+          ],
+          resources: [
+            { label: 'SQLBolt — Lições interativas de SQL', url: 'https://sqlbolt.com/' },
+            { label: 'PostgreSQL Tutorial', url: 'https://www.postgresqltutorial.com/' }
+          ],
+          project: {
+            title: 'Modelar e popular um banco pro sistema que você vai construir na próxima fase',
+            subtitle: 'Projeto da Fase 4',
+            checklist: []
+          }
+        },
+        {
+          id: 5,
+          shortTitle: 'Fase 5 · Spring Boot',
+          title: 'Fase 5 — Spring Boot (Coração do Plano)',
+          weeks: 'Semanas 10-13',
+          highlight: true,
+          topics: [
+            'Spring Core: Inversion of Control, Injeção de Dependência',
+            'Spring Boot: estrutura de projeto, application.properties',
+            'Spring Web: REST Controllers, DTOs, validação (@Valid)',
+            'Spring Data JPA: repositórios, relacionamentos (@OneToMany etc.), Hibernate',
+            'Tratamento global de exceções (@ControllerAdvice)',
+            'Camadas: Controller → Service → Repository',
+            'Spring Security (autenticação básica + JWT) — introdução',
+            'Testes com JUnit 5 e Mockito'
+          ],
+          resources: [
+            { label: 'Curso "Spring Boot 3" (Nélio Alves - Web Services RESTful)', url: 'https://www.udemy.com/' },
+            { label: 'Spring Official Guides (spring.io/guides)', url: 'https://spring.io/guides' }
+          ],
+          project: {
+            title: 'API REST completa (ex: gerenciamento de tarefas, e-commerce simples ou blog)',
+            subtitle: 'Projeto mais importante do plano — Carro-Chefe',
+            checklist: [
+              'CRUD completo',
+              'Relacionamentos entre entidades',
+              'Validações (@Valid)',
+              'Tratamento global de erros (@ControllerAdvice)',
+              'Testes unitários básicos (JUnit 5 / Mockito)'
+            ]
+          }
+        },
+        {
+          id: 6,
+          shortTitle: 'Fase 6 · Ferramentas & DevOps',
+          title: 'Fase 6 — Ferramentas e Boas Práticas de Mercado',
+          weeks: 'Semana 14',
+          highlight: false,
+          topics: [
+            'Git e GitHub (branches, commits semânticos, pull requests)',
+            'Maven ou Gradle',
+            'Docker (básico: rodar um Postgres em container, Dockerfile simples)',
+            'Postman/Insomnia para testar APIs',
+            'Documentação de API com Swagger/OpenAPI',
+            'Introdução a arquitetura em camadas e princípios SOLID'
+          ],
+          resources: [
+            { label: 'Springdoc OpenAPI (Swagger UI para Spring Boot)', url: 'https://springdoc.org/' },
+            { label: 'Documentação Oficial Docker', url: 'https://docs.docker.com/get-started/' }
+          ],
+          project: {
+            title: 'Dockerizar sua aplicação da Fase 5 e documentar com Swagger',
+            subtitle: 'Projeto da Fase 6',
+            checklist: []
+          }
+        },
+        {
+          id: 7,
+          shortTitle: 'Fase 7 · Portfólio & Vagas',
+          title: 'Fase 7 — Portfólio e Preparação pro Processo Seletivo',
+          weeks: 'Semanas 15-16',
+          highlight: false,
+          topics: [
+            'Subir 2-3 projetos bem documentados no GitHub (README caprichado, prints, instruções de uso)',
+            'Criar/ajustar LinkedIn com foco em backend Java',
+            'Revisar fundamentos pra entrevista técnica: complexidade (Big O), estruturas de dados, POO teórico',
+            'Praticar perguntas comportamentais (por que backend, por que Java, um desafio que você resolveu)',
+            'Resolver exercícios de lógica no LeetCode/HackerRank (nível fácil/médio)',
+            'Se possível, contribuir com algum projeto open source simples'
+          ],
+          resources: [
+            { label: 'LeetCode (Algoritmos e Lógica em Java)', url: 'https://leetcode.com/' },
+            { label: 'HackerRank Problem Solving', url: 'https://www.hackerrank.com/domains/algorithms' }
+          ],
+          project: null
+        }
+      ]
+    };
+
+    function getDefaultState() {
+      const state = {
+        initialized: false,
+        theme: 'dark',
+        currentView: 'dashboard',
+        studyMinutes: 0,
+        flagshipProjectPhase: 5,
+        interviewNotes: '',
+        checkedTopics: {},
+        checkedProjectItems: {},
+        projects: {},
+        phaseNotes: {}
+      };
+      PLAN_DATA.phases.forEach(p => {
+        state.phaseNotes[p.id] = '';
+        if (p.project) {
+          state.projects[p.id] = {
+            status: 'Não iniciado',
+            repoUrl: '',
+            notes: ''
+          };
+        }
+      });
+      return state;
+    }
+
+    let appState = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return getDefaultState();
+        const parsed = JSON.parse(raw);
+        return { ...getDefaultState(), ...parsed };
+      } catch (e) {
+        return getDefaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      updateSidebarStats();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const isDark = appState.theme === 'dark';
+      html.classList.toggle('dark', isDark);
+      const icon = isDark ? '☀️' : '🌙';
+      const dIcon = document.getElementById('desktopThemeIcon');
+      const mIcon = document.getElementById('mobileThemeIcon');
+      if (dIcon) dIcon.textContent = icon;
+      if (mIcon) mIcon.textContent = icon;
+    }
+
+    function toggleTheme() {
+      appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    }
+
+    function startFresh() {
+      appState = getDefaultState();
+      appState.initialized = true;
+      appState.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      saveState();
+      closeWelcomeModal();
+      render();
+    }
+
+    function loadDemoData() {
+      const demo = getDefaultState();
+      demo.initialized = true;
+      demo.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      demo.studyMinutes = 2640; // 44h
+      // Check all phase 1 & 2, partial phase 3
+      PLAN_DATA.phases[0].topics.forEach((_, idx) => demo.checkedTopics[`1-${idx}`] = true);
+      PLAN_DATA.phases[1].topics.forEach((_, idx) => demo.checkedTopics[`2-${idx}`] = true);
+      demo.checkedTopics['3-0'] = true;
+      demo.checkedTopics['3-1'] = true;
+      demo.checkedTopics['3-2'] = true;
+
+      demo.projects[1] = {
+        status: 'Concluído',
+        repoUrl: 'https://github.com/exemplo/jogo-da-velha-cli-java',
+        notes: 'Implementado com matriz 3x3, validação de jogadas e tratamento de exceções para entradas inválidas.'
+      };
+      demo.projects[2] = {
+        status: 'Concluído',
+        repoUrl: 'https://github.com/exemplo/sistema-biblioteca-poo',
+        notes: 'Modelagem com herança, interfaces, Enums para status de empréstimo e separação clara de responsabilidades.'
+      };
+      demo.projects[3] = {
+        status: 'Em andamento',
+        repoUrl: 'https://github.com/exemplo/sistema-biblioteca-streams',
+        notes: 'Refatorando buscas e relatórios de livros atrasados usando Java Streams e Optional.'
+      };
+      demo.phaseNotes[1] = 'Foquei bastante em entender como a JVM gerencia tipos primitivos vs wrappers e boas práticas com Scanner.';
+      demo.interviewNotes = 'Destacar no projeto carro-chefe (API REST Spring Boot): arquitetura em camadas (Controller -> Service -> Repository), tratamento global de erros com @ControllerAdvice e cobertura de testes unitários com JUnit 5 e Mockito.';
+
+      appState = demo;
+      saveState();
+      closeWelcomeModal();
+      render();
+    }
+
+    function closeWelcomeModal() {
+      const modal = document.getElementById('welcomeModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmReset() {
+      if (confirm('Deseja reiniciar 100% do seu progresso nesta plataforma? Todos os checkboxes, notas e links salvos neste navegador serão apagados.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        appState = getDefaultState();
+        appState.initialized = true;
+        saveState();
+        render();
+      }
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'progresso-java-backend.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          appState = { ...getDefaultState(), ...imported, initialized: true };
+          saveState();
+          render();
+          alert('Progresso importado com sucesso!');
+        } catch (err) {
+          alert('Arquivo JSON inválido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Metrics
+    function getMetrics() {
+      let totalTopics = 0;
+      let completedTopics = 0;
+      PLAN_DATA.phases.forEach(p => {
+        p.topics.forEach((_, idx) => {
+          totalTopics++;
+          if (appState.checkedTopics[`${p.id}-${idx}`]) completedTopics++;
+        });
+      });
+
+      const projectPhases = PLAN_DATA.phases.filter(p => p.project !== null);
+      const totalProjects = projectPhases.length;
+      const completedProjects = projectPhases.filter(p => appState.projects[p.id]?.status === 'Concluído').length;
+
+      const percent = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+      return { totalTopics, completedTopics, totalProjects, completedProjects, percent };
+    }
+
+    function getPhaseProgress(phaseId) {
+      const phase = PLAN_DATA.phases.find(p => p.id === phaseId);
+      if (!phase) return { done: 0, total: 0, percent: 0 };
+      const total = phase.topics.length;
+      const done = phase.topics.filter((_, idx) => appState.checkedTopics[`${phaseId}-${idx}`]).length;
+      return { done, total, percent: Math.round((done / total) * 100) };
+    }
+
+    function isTechUnlocked(tech) {
+      return tech.phases.some(pid => {
+        const prog = getPhaseProgress(pid);
+        return prog.done > 0;
+      });
+    }
+
+    // Navigation
+    function navigate(view) {
+      appState.currentView = view;
+      saveState();
+      render();
+      // Close mobile sidebar if open
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      sidebar.classList.toggle('-translate-x-full');
+      backdrop.classList.toggle('hidden');
+    }
+
+    function updateSidebarStats() {
+      const metrics = getMetrics();
+      document.getElementById('sidebarPercent').textContent = `${metrics.percent}%`;
+      document.getElementById('sidebarProgressBar').style.width = `${metrics.percent}%`;
+      document.getElementById('navProjectsBadge').textContent = `${metrics.completedProjects}/${metrics.totalProjects}`;
+
+      const phaseNavList = document.getElementById('phaseNavList');
+      phaseNavList.innerHTML = PLAN_DATA.phases.map(p => {
+        const prog = getPhaseProgress(p.id);
+        const navKey = `phase-${p.id}`;
+        const isActive = appState.currentView === navKey;
+        return `
+          <button onclick="navigate('${navKey}')" data-nav="${navKey}"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition cursor-pointer ${
+              isActive
+                ? 'bg-spring/15 text-spring font-semibold border border-spring/30'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70'
+            }">
+            <span class="truncate flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full ${prog.percent === 100 ? 'bg-spring' : prog.done > 0 ? 'bg-java' : 'bg-slate-400/50'}"></span>
+              ${p.shortTitle}
+            </span>
+            <span class="font-mono text-[11px] opacity-80">${prog.done}/${prog.total}</span>
+          </button>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-nav') === appState.currentView;
+        btn.className = `nav-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer ${
+          isActive
+            ? 'bg-spring/15 text-spring font-semibold border border-spring/30'
+            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70'
+        }`;
+      });
+    }
+
+    // Pomodoro Timer State
+    let timerSeconds = 25 * 60;
+    let timerRunning = false;
+    let timerMode = 'focus'; // focus | break
+    let timerInterval = null;
+
+    function formatTimer(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function playChime() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch (e) {}
+    }
+
+    function toggleTimer() {
+      if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+      } else {
+        timerRunning = true;
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            const el = document.getElementById('pomodoroDisplay');
+            if (el) el.textContent = formatTimer(timerSeconds);
+          } else {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            playChime();
+            if (timerMode === 'focus') {
+              appState.studyMinutes += 25;
+              saveState();
+              timerMode = 'break';
+              timerSeconds = 5 * 60;
+              alert('Sessão Pomodoro concluída! +25 minutos adicionados ao seu registro.');
+            } else {
+              timerMode = 'focus';
+              timerSeconds = 25 * 60;
+              alert('Pausa finalizada! Pronto para mais 25 minutos de código?');
+            }
+            render();
+          }
+        }, 1000);
+      }
+      render();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSeconds = timerMode === 'focus' ? 25 * 60 : 5 * 60;
+      render();
+    }
+
+    function switchTimerMode(mode) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerMode = mode;
+      timerSeconds = mode === 'focus' ? 25 * 60 : 5 * 60;
+      render();
+    }
+
+    function logManualMinutes() {
+      const input = document.getElementById('manualHoursInput');
+      const hours = parseFloat(input.value);
+      if (!isNaN(hours) && hours > 0) {
+        appState.studyMinutes += Math.round(hours * 60);
+        saveState();
+        render();
+      }
+    }
+
+    // Actions
+    function toggleTopic(phaseId, idx) {
+      const key = `${phaseId}-${idx}`;
+      appState.checkedTopics[key] = !appState.checkedTopics[key];
+      saveState();
+      render();
+    }
+
+    function toggleProjectSubItem(phaseId, idx) {
+      const key = `${phaseId}-${idx}`;
+      appState.checkedProjectItems[key] = !appState.checkedProjectItems[key];
+      saveState();
+      render();
+    }
+
+    function updateProjectField(phaseId, field, value) {
+      if (!appState.projects[phaseId]) {
+        appState.projects[phaseId] = { status: 'Não iniciado', repoUrl: '', notes: '' };
+      }
+      appState.projects[phaseId][field] = value;
+      saveState();
+      if (field === 'status') render();
+    }
+
+    function updatePhaseNote(phaseId, value) {
+      appState.phaseNotes[phaseId] = value;
+      saveState();
+    }
+
+    // Views
+    function renderDashboard() {
+      const metrics = getMetrics();
+      const totalHours = (appState.studyMinutes / 60).toFixed(1);
+
+      return `
+        <div class="space-y-6">
+          <!-- Hero Banner -->
+          <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 dark:from-slate-900 dark:to-slate-900/60 text-white p-6 md:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-56 h-56 rounded-full bg-spring/10 blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-12 -bottom-12 w-56 h-56 rounded-full bg-java/10 blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 space-y-4">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-spring/20 text-spring border border-spring/30">
+                  ~16 Semanas (4 Meses)
+                </span>
+                <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-java/20 text-java-light border border-java/30">
+                  10–15h / semana
+                </span>
+              </div>
+              <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">${PLAN_DATA.meta.title}</h2>
+              <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+                <strong>Objetivo:</strong> ${PLAN_DATA.meta.goal}.
+              </p>
+              <blockquote class="border-l-2 border-spring pl-3.5 text-xs md:text-sm text-slate-300 italic">
+                "${PLAN_DATA.meta.quote}"
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <p class="text-xs font-mono text-slate-500 dark:text-slate-400">TÓPICOS CONCLUÍDOS</p>
+              <div class="mt-2 flex items-baseline justify-between">
+                <span class="text-2xl font-extrabold">${metrics.completedTopics}<span class="text-sm font-normal text-slate-400">/${metrics.totalTopics}</span></span>
+                <span class="text-xs font-mono font-bold text-spring">${metrics.percent}%</span>
+              </div>
+              <div class="mt-3 w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-spring" style="width: ${metrics.percent}%"></div>
+              </div>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <p class="text-xs font-mono text-slate-500 dark:text-slate-400">PROJETOS PRÁTICOS</p>
+              <div class="mt-2 flex items-baseline justify-between">
+                <span class="text-2xl font-extrabold">${metrics.completedProjects}<span class="text-sm font-normal text-slate-400">/${metrics.totalProjects}</span></span>
+                <button onclick="navigate('portfolio')" class="text-xs text-java hover:underline font-medium cursor-pointer">Ver portfólio →</button>
+              </div>
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">1 projeto prático por fase</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <p class="text-xs font-mono text-slate-500 dark:text-slate-400">HORAS ESTUDADAS</p>
+              <div class="mt-2 flex items-baseline justify-between">
+                <span class="text-2xl font-extrabold">${totalHours}h</span>
+                <span class="text-xs font-mono text-slate-400">Meta: 160–240h</span>
+              </div>
+              <div class="mt-2.5 flex items-center gap-1.5">
+                <input id="manualHoursInput" type="number" step="0.5" min="0.5" placeholder="+h" class="w-16 px-2 py-1 text-xs rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono" />
+                <button onclick="logManualMinutes()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-800 dark:bg-slate-700 text-white hover:opacity-90 cursor-pointer">+ Registrar</button>
+              </div>
+            </div>
+
+            <!-- Pomodoro Mini Widget -->
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono text-slate-500 dark:text-slate-400">POMODORO</span>
+                <div class="flex gap-1 text-[11px] font-mono">
+                  <button onclick="switchTimerMode('focus')" class="px-1.5 py-0.5 rounded cursor-pointer ${timerMode === 'focus' ? 'bg-java/20 text-java font-bold' : 'text-slate-400'}">25m</button>
+                  <button onclick="switchTimerMode('break')" class="px-1.5 py-0.5 rounded cursor-pointer ${timerMode === 'break' ? 'bg-spring/20 text-spring font-bold' : 'text-slate-400'}">5m</button>
+                </div>
+              </div>
+              <div class="my-1 flex items-center justify-between">
+                <span id="pomodoroDisplay" class="text-2xl font-mono font-bold tracking-wider">${formatTimer(timerSeconds)}</span>
+                <div class="flex gap-1.5">
+                  <button onclick="toggleTimer()" class="px-3 py-1 rounded-lg text-xs font-semibold text-white cursor-pointer ${timerRunning ? 'bg-amber-600' : 'bg-spring'}">
+                    ${timerRunning ? 'Pausar' : 'Iniciar'}
+                  </button>
+                  <button onclick="resetTimer()" class="px-2 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer" title="Resetar">↺</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tech Stack Tracker -->
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="font-bold text-base">Trilha de Tecnologias ao Final do Plano</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">As badges acendem automaticamente conforme você avança nas fases correspondentes.</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              ${PLAN_DATA.techStack.map(t => {
+                const active = isTechUnlocked(t);
+                return `
+                  <span class="px-3 py-1.5 rounded-xl text-xs font-mono font-semibold border transition ${
+                    active
+                      ? 'bg-spring/15 text-spring border-spring/40 shadow-sm'
+                      : 'bg-slate-100 dark:bg-slate-800/60 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-800'
+                  }">
+                    ${active ? '✓ ' : ''}${t.name}
+                  </span>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Phases Grid -->
+          <div class="space-y-3">
+            <h3 class="font-bold text-lg">Fases do Plano de Estudos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${PLAN_DATA.phases.map(p => {
+                const prog = getPhaseProgress(p.id);
+                const projStatus = p.project ? appState.projects[p.id]?.status : null;
+                return `
+                  <div onclick="navigate('phase-${p.id}')" class="group p-5 rounded-2xl bg-white dark:bg-slate-900 border ${p.highlight ? 'border-spring/50 ring-1 ring-spring/20' : 'border-slate-200 dark:border-slate-800'} hover:border-spring transition cursor-pointer shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          ${p.weeks}
+                        </span>
+                        ${p.highlight ? '<span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-spring/20 text-spring">★ CORAÇÃO DO PLANO</span>' : ''}
+                      </div>
+                      <h4 class="font-bold text-base group-hover:text-spring transition">${p.title}</h4>
+                      ${p.project ? `<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">🔨 Projeto: ${p.project.title}</p>` : '<p class="text-xs text-slate-500 dark:text-slate-400">🎯 Foco em portfólio, GitHub, LinkedIn e entrevistas</p>'}
+                    </div>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between text-xs">
+                        <span class="text-slate-500 dark:text-slate-400">${prog.done} de ${prog.total} tópicos</span>
+                        ${projStatus ? `<span class="font-mono text-[11px] ${projStatus === 'Concluído' ? 'text-spring' : projStatus === 'Em andamento' ? 'text-java' : 'text-slate-400'}">${projStatus}</span>` : ''}
+                      </div>
+                      <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-java to-spring transition-all" style="width: ${prog.percent}%"></div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPhase(phaseId) {
+      const phase = PLAN_DATA.phases.find(p => p.id === phaseId);
+      if (!phase) return renderDashboard();
+      const prog = getPhaseProgress(phaseId);
+      const projState = appState.projects[phaseId] || { status: 'Não iniciado', repoUrl: '', notes: '' };
+
+      return `
+        <div class="space-y-6">
+          <!-- Header -->
+          <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <button onclick="navigate('dashboard')" class="text-xs font-mono text-slate-500 hover:text-spring cursor-pointer">← Dashboard</button>
+                <span class="text-slate-300 dark:text-slate-700">/</span>
+                <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-java/15 text-java font-semibold">${phase.weeks}</span>
+                ${phase.highlight ? '<span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-spring/20 text-spring font-bold">★ Coração do Plano</span>' : ''}
+              </div>
+              <h2 class="text-2xl md:text-3xl font-extrabold">${phase.title}</h2>
+            </div>
+            <div class="flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div class="text-right">
+                <p class="text-[11px] font-mono text-slate-400">CONCLUSÃO</p>
+                <p class="text-sm font-mono font-bold text-spring">${prog.done}/${prog.total} (${prog.percent}%)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left: Topics Checklist -->
+            <div class="lg:col-span-2 space-y-6">
+              <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                  <span>✅</span> ${phase.id === 7 ? 'Tarefas da Fase' : 'Tópicos de Estudo'}
+                </h3>
+                <div class="space-y-2.5">
+                  ${phase.topics.map((topic, idx) => {
+                    const checked = !!appState.checkedTopics[`${phase.id}-${idx}`];
+                    return `
+                      <label onclick="toggleTopic(${phase.id}, ${idx})" class="flex items-start gap-3 p-3 rounded-xl border transition cursor-pointer ${
+                        checked
+                          ? 'bg-spring/10 border-spring/30 text-slate-700 dark:text-slate-200'
+                          : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                      }">
+                        <input type="checkbox" ${checked ? 'checked' : ''} class="mt-0.5 w-4 h-4 accent-[#6DB33F] rounded cursor-pointer" onclick="event.stopPropagation(); toggleTopic(${phase.id}, ${idx})" />
+                        <span class="text-sm leading-snug ${checked ? 'line-through opacity-75' : ''}">${topic}</span>
+                      </label>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              ${phase.project ? `
+                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border ${phase.highlight ? 'border-spring/50' : 'border-slate-200 dark:border-slate-800'} shadow-sm space-y-4">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <span class="text-xs font-mono uppercase tracking-wider text-java font-bold">${phase.project.subtitle}</span>
+                      <h3 class="font-bold text-lg mt-0.5">${phase.project.title}</h3>
+                    </div>
+                    <select onchange="updateProjectField(${phase.id}, 'status', this.value)"
+                      class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                      <option value="Não iniciado" ${projState.status === 'Não iniciado' ? 'selected' : ''}>⚪ Não iniciado</option>
+                      <option value="Em andamento" ${projState.status === 'Em andamento' ? 'selected' : ''}>🟠 Em andamento</option>
+                      <option value="Concluído" ${projState.status === 'Concluído' ? 'selected' : ''}>🟢 Concluído</option>
+                    </select>
+                  </div>
+
+                  ${phase.project.checklist && phase.project.checklist.length > 0 ? `
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-2">
+                      <p class="text-xs font-mono font-bold text-spring uppercase">Requisitos obrigatórios da API REST:</p>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        ${phase.project.checklist.map((item, idx) => {
+                          const subChecked = !!appState.checkedProjectItems[`${phase.id}-${idx}`];
+                          return `
+                            <label class="flex items-center gap-2 text-xs cursor-pointer">
+                              <input type="checkbox" ${subChecked ? 'checked' : ''} onchange="toggleProjectSubItem(${phase.id}, ${idx})" class="w-4 h-4 accent-[#6DB33F] rounded" />
+                              <span class="${subChecked ? 'line-through opacity-70' : ''}">${item}</span>
+                            </label>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
+
+                  <div class="grid grid-cols-1 gap-3 pt-1">
+                    <div>
+                      <label class="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1">Link do Repositório no GitHub</label>
+                      <input type="url" value="${projState.repoUrl || ''}" oninput="updateProjectField(${phase.id}, 'repoUrl', this.value)"
+                        placeholder="https://github.com/seu-usuario/projeto-fase-${phase.id}"
+                        class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-spring font-mono" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-mono text-slate-500 dark:text-slate-400 mb-1">Resumo técnico / O que você implementou</label>
+                      <textarea rows="2" oninput="updateProjectField(${phase.id}, 'notes', this.value)"
+                        placeholder="Ex: Endpoints criados, entidades modeladas, desafios resolvidos..."
+                        class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-spring">${projState.notes || ''}</textarea>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Right: Resources & Notes -->
+            <div class="space-y-6">
+              <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <h3 class="font-bold text-sm flex items-center gap-2"><span>📚</span> Recursos Recomendados</h3>
+                <ul class="space-y-2.5">
+                  ${phase.resources.map(r => `
+                    <li>
+                      <a href="${r.url}" target="_blank" rel="noopener noreferrer"
+                        class="block p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-spring/10 border border-slate-200/80 dark:border-slate-800 hover:border-spring/40 transition text-xs leading-relaxed">
+                        <span class="font-medium text-slate-800 dark:text-slate-200">${r.label}</span>
+                        <span class="block mt-1 font-mono text-[11px] text-spring">Abrir recurso ↗</span>
+                      </a>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-sm flex items-center gap-2"><span>📝</span> Caderno da Fase ${phase.id}</h3>
+                  <span class="text-[11px] font-mono text-slate-400">Auto-save</span>
+                </div>
+                <textarea rows="8" oninput="updatePhaseNote(${phase.id}, this.value)"
+                  placeholder="Anote dúvidas, comandos úteis, conceitos de Java/Spring ou links extras..."
+                  class="w-full p-3 rounded-xl text-xs leading-relaxed bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-spring">${appState.phaseNotes[phase.id] || ''}</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+            ${phase.id > 1
+              ? `<button onclick="navigate('phase-${phase.id - 1}')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-spring cursor-pointer">← Fase ${phase.id - 1}</button>`
+              : `<div></div>`
+            }
+            ${phase.id < 7
+              ? `<button onclick="navigate('phase-${phase.id + 1}')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-spring text-white hover:bg-spring-dark cursor-pointer">Próxima: Fase ${phase.id + 1} →</button>`
+              : `<button onclick="navigate('portfolio')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-spring text-white hover:bg-spring-dark cursor-pointer">Ver Meu Portfólio →</button>`
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPortfolio() {
+      const projectPhases = PLAN_DATA.phases.filter(p => p.project !== null);
+      return `
+        <div class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-2xl md:text-3xl font-extrabold">Portfólio & Projetos Práticos</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Centralize os repositórios construídos ao longo das fases para apresentar em entrevistas de estágio.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            ${projectPhases.map(p => {
+              const proj = appState.projects[p.id] || { status: 'Não iniciado', repoUrl: '', notes: '' };
+              const badgeColor = proj.status === 'Concluído'
+                ? 'bg-spring/15 text-spring border-spring/30'
+                : proj.status === 'Em andamento'
+                  ? 'bg-java/15 text-java border-java/30'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700';
+              return `
+                <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border ${p.highlight ? 'border-spring/50' : 'border-slate-200 dark:border-slate-800'} shadow-sm flex flex-col justify-between space-y-4">
+                  <div class="space-y-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-xs font-mono text-slate-400">Fase ${p.id} · ${p.weeks}</span>
+                      <span class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border ${badgeColor}">${proj.status}</span>
+                    </div>
+                    <h3 class="font-bold text-base">${p.project.title}</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                      ${proj.notes ? proj.notes : 'Nenhuma descrição técnica adicionada ainda. Clique em editar na fase correspondente ou preencha abaixo.'}
+                    </p>
+                  </div>
+                  <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                    ${proj.repoUrl
+                      ? `<a href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer" class="text-xs font-mono font-semibold text-spring hover:underline truncate">🔗 ${proj.repoUrl}</a>`
+                      : `<span class="text-xs font-mono text-slate-400">Sem link GitHub</span>`
+                    }
+                    <button onclick="navigate('phase-${p.id}')" class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-spring/20 hover:text-spring transition cursor-pointer">
+                      Editar
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTips() {
+      return `
+        <div class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-2xl md:text-3xl font-extrabold">Dicas Gerais & Preparação para Entrevistas</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Estratégias essenciais para transformar seus estudos em aprovação no processo seletivo.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${PLAN_DATA.tips.map((tip, i) => `
+              <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-spring/15 text-spring font-mono font-bold text-xs flex items-center justify-center">${i + 1}</span>
+                  <h3 class="font-bold text-sm">${tip.title}</h3>
+                </div>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pl-8">${tip.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Flagship Project Prep -->
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-spring/40 shadow-sm space-y-4">
+            <div class="space-y-1">
+              <span class="text-xs font-mono uppercase text-spring font-bold">Estratégia de Entrevista</span>
+              <h3 class="font-bold text-lg">Roteiro do Seu Projeto "Carro-Chefe"</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                Prepare um resumo claro sobre arquitetura, decisões técnicas e desafios superados no seu projeto principal (recomendado: API REST da Fase 5/6).
+              </p>
+            </div>
+            <textarea rows="6" oninput="appState.interviewNotes = this.value; saveState();"
+              placeholder="Ex: Escolhi construir uma API de gestão de tarefas com Spring Boot 3 e PostgreSQL. Estruturei em camadas (Controller, Service, Repository), usei DTOs com Bean Validation, tratei exceções globalmente com @ControllerAdvice e subi o banco via Docker Compose..."
+              class="w-full p-4 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-spring">${appState.interviewNotes || ''}</textarea>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      applyTheme();
+      updateSidebarStats();
+      const container = document.getElementById('appContent');
+      const view = appState.currentView;
+
+      if (view === 'dashboard') {
+        container.innerHTML = renderDashboard();
+      } else if (view === 'portfolio') {
+        container.innerHTML = renderPortfolio();
+      } else if (view === 'tips') {
+        container.innerHTML = renderTips();
+      } else if (view.startsWith('phase-')) {
+        const id = parseInt(view.replace('phase-', ''), 10);
+        container.innerHTML = renderPhase(id);
+      } else {
+        container.innerHTML = renderDashboard();
+      }
+    }
+
+    // Init
+    (function init() {
+      applyTheme();
+      if (!appState.initialized) {
+        const modal = document.getElementById('welcomeModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
